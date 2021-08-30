@@ -1,4 +1,21 @@
-'use strict';
+
+
+$.fn.serializeObject = function()
+{
+   var o = {};
+   var a = this.serializeArray();
+   $.each(a, function() {
+       if (o[this.name]) {
+           if (!o[this.name].push) {
+               o[this.name] = [o[this.name]];
+           }
+           o[this.name].push(this.value || '');
+       } else {
+           o[this.name] = this.value || '';
+       }
+   });
+   return o;
+};
 
 (function (Poll) {
 	var Creator = {};
@@ -121,7 +138,7 @@
 			return app.alertError('Editing not implemented.');
 		}
 
-		require(['flatpickr', 'flatpickr.i10n', 'bootbox', 'dayjs', 'translator'], function (flatpickr, flatpickrI10N, bootbox, dayjs, Translator) {
+		require(['flatpickr', 'flatpickr.i10n', 'dayjs', 'translator'], function (flatpickr, flatpickrI10N, dayjs, Translator) {
 			app.parseAndTranslate('poll/creator', { poll: poll, config: config, isRedactor: !!$.Redactor }, function (html) {
 				// Initialise modal
 				var modal = bootbox.dialog({
@@ -224,6 +241,7 @@
 	}
 
 	function serializeObjectFromForm(form) {
+		console.log('form', form.serialize())
 		var obj = form.serializeObject();
 		var result = {
 			options: obj.options,
